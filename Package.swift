@@ -41,12 +41,12 @@ let package = Package(
         .target(
             name: "Kanna",
             dependencies: dependencies,
-            path: "Sources",
-            exclude: [
-                "Kanna/Info.plist",
-                "Kanna/Kanna.h",
-                "../Tests/KannaTests/Data"
-            ]
+            path: "Sources"
+//            exclude: [
+//                "Sources/Info.plist",
+//                "Sources/Kanna.h",
+//                "Tests/KannaTests/Data"
+//            ]
         ),
         .testTarget(
             name: "KannaTests",

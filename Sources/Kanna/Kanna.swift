@@ -168,7 +168,9 @@ public protocol XMLElement: SearchableNode {
 
     func addPrevSibling(_ node: XMLElement)
     func addNextSibling(_ node: XMLElement)
+    func addChild(_ node: XMLElement)
     func removeChild(_ node: XMLElement)
+    func addProperty(_ property: String, value: String)
     var nextSibling: XMLElement? { get }
     var previousSibling: XMLElement? { get }
 }
@@ -178,6 +180,8 @@ XMLDocument
 */
 public protocol XMLDocument: AnyObject, SearchableNode {
     var namespaces: [Namespace] { get }
+    
+    func newNode(_ name: String) -> XMLElement?
 }
 
 /**

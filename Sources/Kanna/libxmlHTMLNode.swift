@@ -138,15 +138,10 @@ final class libxmlHTMLNode: XMLElement {
         }
     }
 
-    init(document: XMLDocument?, docPtr: xmlDocPtr) throws {
+    init(document: XMLDocument?, docPtr: xmlDocPtr) {
         self.weakDocument = document
         self.docPtr       = docPtr
-        guard let nodePtr = xmlDocGetRootElement(docPtr) else {
-            // Error handling is omitted, and will be added if necessary in the future.
-            // e.g: if let error = xmlGetLastError(), error.pointee.code == XML_ERR_DOCUMENT_EMPTY.rawValue
-            throw ParseError.Empty
-        }
-        self.nodePtr = nodePtr
+        self.nodePtr      = xmlDocGetRootElement(docPtr)
     }
 
     init(document: XMLDocument?, docPtr: xmlDocPtr, node: xmlNodePtr) {
@@ -193,7 +188,11 @@ final class libxmlHTMLNode: XMLElement {
             return
         }
         xmlUnlinkNode(node.nodePtr)
-        xmlFreeNode(node.nodePtr)
+        xmlFree(node.nodePtr)
+    }
+    
+    func addProperty(_ property: String, value: String) {
+        xmlNewProp(nodePtr, property, value)
     }
 
     private func node(from ptr: xmlNodePtr?) -> XMLElement? {

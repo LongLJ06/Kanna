@@ -131,7 +131,7 @@ extension String.Encoding {
         guard let cfencstr = CFStringConvertEncodingToIANACharSetName(cfenc) else {
             return nil
         }
-        return cfencstr as String
+        return String(describing: cfencstr)
         #endif
     }
 }
@@ -209,7 +209,7 @@ final class libxmlHTMLDocument: HTMLDocument {
             throw ParseError.EncodingMismatch
         }
 
-        rootNode = try libxmlHTMLNode(document: self, docPtr: docPtr)
+        rootNode = libxmlHTMLNode(document: self, docPtr: docPtr)
     }
 
     deinit {
@@ -228,6 +228,14 @@ final class libxmlHTMLDocument: HTMLDocument {
     func css(_ selector: String, namespaces: [String: String]? = nil) -> XPathObject {
         guard let docPtr = docPtr else { return .none }
         return XPath(doc: self, docPtr: docPtr).css(selector, namespaces: namespaces)
+    }
+    
+    func newNode(_ name: String) -> XMLElement? {
+        guard let docPtr = docPtr, let node = xmlNewNode(nil, name) else {
+            return nil
+        }
+        
+        return libxmlHTMLNode(document: self, docPtr: docPtr, node: node)
     }
 }
 
@@ -299,7 +307,7 @@ final class libxmlXMLDocument: XMLDocument {
         }
         let url: String = ""
         docPtr   = cur.withUnsafeBytes { xmlReadDoc($0.bindMemory(to: xmlChar.self).baseAddress!, url, charsetName, CInt(option)) }
-        rootNode = try libxmlHTMLNode(document: self, docPtr: docPtr!)
+        rootNode = libxmlHTMLNode(document: self, docPtr: docPtr!)
     }
 
     deinit {
@@ -314,6 +322,14 @@ final class libxmlXMLDocument: XMLDocument {
     func css(_ selector: String, namespaces: [String: String]? = nil) -> XPathObject {
         guard let docPtr = docPtr else { return .none }
         return XPath(doc: self, docPtr: docPtr).css(selector, namespaces: namespaces)
+    }
+    
+    func newNode(_ name: String) -> XMLElement? {
+        guard let docPtr = docPtr, let node = xmlNewNode(nil, name) else {
+            return nil
+        }
+        
+        return libxmlHTMLNode(document: self, docPtr: docPtr, node: node)
     }
 }
 
